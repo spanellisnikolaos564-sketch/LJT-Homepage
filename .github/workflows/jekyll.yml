@@ -49,6 +49,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch --orphan gh-pages
           git rm -r -q --ignore-unmatch .
+          git clean -fdx
           cp -a /tmp/homepage/. .
           touch .nojekyll
           git add -A
@@ -58,4 +59,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api repos/${{ github.repository }}/pages || echo "GitHub Pages still needs to be enabled for this repository in Settings -> Pages."
+          gh api repos/${{ github.repository }}/pages || echo "Pages is not enabled yet: choose Settings -> Pages -> Source: Deploy from a branch -> gh-pages / root."

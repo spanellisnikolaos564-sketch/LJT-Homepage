@@ -29,6 +29,12 @@ bundle exec jekyll serve -l -H localhost
 
 ## Publishing
 
-Pushing to `master` runs `.github/workflows/jekyll.yml`, which builds the site with Jekyll and publishes the generated files to the `gh-pages` branch, served at:
+Pushing to `master` runs `.github/workflows/jekyll.yml`, which builds the site with Jekyll and publishes the generated files to the `gh-pages` branch.
+
+GitHub Pages reads that branch from:
+
+**Settings → Pages → Source: Deploy from a branch → Branch: `gh-pages` / `/ (root)`**
+
+The published site is:
 
 https://spanellisnikolaos564-sketch.github.io/LJT-Homepage/

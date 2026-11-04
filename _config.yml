@@ -116,7 +116,6 @@ analytics:
 include:
   - .htaccess
   - _pages
-  - files
 exclude:
   - "*.sublime-project"
   - "*.sublime-workspace"
@@ -125,6 +124,7 @@ exclude:
   - .github
   - .jekyll-assets-cache
   - .sass-cache
+  - AGENTS.md
   - assets/js/_main.js
   - assets/js/plugins
   - assets/js/vendor
@@ -133,9 +133,11 @@ exclude:
   - config
   - Dockerfile
   - Gemfile
+  - Gemfile.lock
   - Gruntfile.js
   - gulpfile.js
   - LICENSE
+  - docker-compose.yaml
   - local
   - log
   - markdown_generator
@@ -174,7 +176,7 @@ kramdown:
 
 
 # Only the publications collection is used: it supplies the publication records
-# rendered on the about page and on the publications subpage.
+# rendered on the publications subpage. The about page lists the same records.
 collections:
   publications:
     output: false
