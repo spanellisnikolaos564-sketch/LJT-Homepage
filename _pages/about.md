@@ -73,7 +73,7 @@ My research interests include:
 
   *NeurIPS*, 2023.
 
-The same publication list is also available on the [Publications](/publications/) subpage.
+The same publication list is also available on the [Publications]({{ site.baseurl }}/publications/) subpage.
 
 ## Contact
 
