@@ -1,0 +1,11 @@
+{% comment %}
+Publication records live in /_publications. The same list is rendered on the
+about page and on the publications subpage, ordered from newest to oldest.
+{% endcomment %}
+{% assign publications = site.publications | sort: "year" | reverse %}
+
+<ul class="publications">
+{% for pub in publications %}
+  <li><strong>{{ pub.title }}</strong>{% if pub.first_author %} — first author{% endif %}<br>{{ pub.authors }}<br><em>{{ pub.venue }}</em>, {{ pub.year }}</li>
+{% endfor %}
+</ul>
