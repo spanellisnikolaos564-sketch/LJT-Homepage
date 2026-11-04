@@ -29,6 +29,6 @@ bundle exec jekyll serve -l -H localhost
 
 ## Publishing
 
-Pushing to `master` runs `.github/workflows/jekyll.yml`, which builds the site with Jekyll and deploys it toGitHub Pages at:
+Pushing to `master` runs `.github/workflows/jekyll.yml`, which builds the site with Jekyll and deploys it to GitHub Pages at:
 
 https://spanellisnikolaos564-sketch.github.io/LJT-Homepage/
