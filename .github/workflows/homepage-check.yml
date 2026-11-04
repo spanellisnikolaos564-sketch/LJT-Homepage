@@ -1,0 +1,100 @@
+name: Temporary homepage build check
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: true
+
+      - name: Remove template demo content
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -r --quiet --ignore-unmatch \
+            _pages/archive-layout-with-content.md \
+            _pages/category-archive.html \
+            _pages/collection-archive.html \
+            _pages/cv.md \
+            _pages/markdown.md \
+            _pages/non-menu-page.md \
+            _pages/page-archive.html \
+            _pages/portfolio.html \
+            _pages/sitemap.md \
+            _pages/talkmap.html \
+            _pages/talks.html \
+            _pages/teaching.html \
+            _pages/terms.md \
+            _pages/year-archive.html \
+            _posts _drafts _talks _teaching _portfolio \
+            _publications/2009-10-01-paper-title-number-1.md \
+            _publications/2010-10-01-paper-title-number-2.md \
+            _publications/2015-10-01-paper-title-number-3.md \
+            _publications/2024-02-17-paper-title-number-4.md \
+            _publications/2025-06-08-paper-title-number-5.md \
+            files talkmap talkmap.ipynb talkmap.py talkmap_out.ipynb \
+            _data/comments images/profile.png images/editing-talk.png \
+            .github/workflows/scrape_talks.yml
+          if git diff --cached --quiet; then
+            echo "No demo content left to remove."
+          else
+            git commit -m "Remove template demo pages, posts and sample content"
+            git push
+          fi
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1.328.0
+        with:
+          ruby-version: '3.1'
+
+      - name: Install Ruby dependencies
+        run: bundle install
+
+      - name: Install UglifyJS
+        run: npm install -g uglify-js
+
+      - name: Minify JavaScript
+        run: |
+          uglifyjs assets/js/plugins/jquery.greedy-navigation.js assets/js/_main.js assets/js/theme.js -c -m -o assets/js/main.min.js
+
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "/LJT-Homepage"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Inspect generated pages
+        run: |
+          echo "=== Generated HTML files ==="
+          find _site -name '*.html' | sort
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, html
+          for name in ["_site/index.html", "_site/publications/index.html"]:
+              text = Path(name).read_text()
+              text = re.sub(r'<script.*?</script>', '', text, flags=re.S)
+              text = re.sub(r'<style.*?</style>', '', text, flags=re.S)
+              text = re.sub(r'<[^>]+>', ' ', text)
+              print("=== " + name + " ===")
+              print(re.sub(r'\s+', ' ', html.unescape(text)))
+          PY
+
+      - name: Report and enable GitHub Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api repos/${{ github.repository }}/pages > /tmp/pages.json 2>/dev/null; then
+            echo "=== Existing Pages configuration ==="
+            cat /tmp/pages.json
+          else
+            echo "=== Enabling GitHub Pages with a GitHub Actions build ==="
+            gh api -X POST repos/${{ github.repository }}/pages -f build_type=workflow
+          fi
