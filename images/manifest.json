@@ -1,0 +1,19 @@
+{
+	"name": "Junteng Liu",
+	"short_name": "Junteng Liu",
+	"description": "Academic portfolio of Junteng Liu, a first-year PhD candidate at HKUST NLP Group working on natural language processing and machine learning.",
+	"start_url": "/LJT-Homepage",
+	"lang": "en-US",
+	"icons": [
+		{
+			"src": "/images/favicon-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/images/favicon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}
