@@ -45,6 +45,7 @@ jobs:
       - name: Publish the generated site to gh-pages
         run: |
           cp -a _site /tmp/homepage
+          git fetch --depth=1 origin gh-pages || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch --orphan gh-pages
@@ -53,8 +54,25 @@ jobs:
           cp -a /tmp/homepage/. .
           touch .nojekyll
           git add -A
-          git commit -q -m "Deploy the personal homepage"
-          git push --force origin gh-pages:gh-pages
+          published_tree=$(git rev-parse FETCH_HEAD^{tree} 2>/dev/null || echo "")
+          if [ "$(git write-tree)" = "$published_tree" ]; then
+            echo "The published site is already up to date."
+          else
+            git commit -q -m "Deploy the personal homepage"
+            pushed=false
+            for attempt in 1 2 3; do
+              if git push --force origin gh-pages:gh-pages; then
+                pushed=true
+                break
+              fi
+              echo "Push attempt ${attempt} failed; retrying in 10 seconds."
+              sleep 10
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Could not publish the generated site." >&2
+              exit 1
+            fi
+          fi
       - name: Report Pages status
         env:
           GH_TOKEN: ${{ github.token }}
